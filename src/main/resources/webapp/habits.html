@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hábitos — LoopFlow</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2F49A1',
+              dark: '#1e316e',
+              light: '#4e6cc5',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles (app.css) -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="bg-[#f8f9fc] dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
+
+  <div class="app-shell flex">
+    <!-- Sidebar (Fondo oscuro permanente) -->
+    <aside class="sidebar bg-slate-950 text-slate-200 w-[260px] fixed top-0 bottom-0 left-0 flex flex-col justify-between border-r border-slate-900">
+      <div>
+        <!-- Logo -->
+        <div class="sidebar-logo p-6 border-b border-slate-900 flex items-center justify-between">
+          <a href="index.html" class="font-serif text-xl font-bold tracking-tight text-white">LoopFlow<span class="text-primary">.</span></a>
+          <button data-sidebar-toggle class="md:hidden text-slate-400 hover:text-white">×</button>
+        </div>
+        
+        <!-- Navigation Links -->
+        <div class="sidebar-section py-4">
+          <div class="sidebar-section-label px-6 py-2 text-xs font-semibold text-slate-500 uppercase tracking-widest">Módulos</div>
+          <nav class="space-y-1">
+            <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">📊</span> Dashboard
+            </a>
+            <a href="habits.html" class="sidebar-link active flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">🎯</span> Hábitos
+            </a>
+            <a href="scrum.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">📋</span> Tablero Scrum
+            </a>
+          </nav>
+        </div>
+      </div>
+      
+      <!-- User Profile & Theme Toggle -->
+      <div class="p-6 border-t border-slate-900 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm">LF</div>
+          <div>
+            <p class="text-sm font-semibold text-white">Usuario</p>
+            <p class="text-xs text-slate-500">Miembro Premium</p>
+          </div>
+        </div>
+        <!-- Dark Mode Toggle -->
+        <button data-toggle-theme class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <span data-theme-icon>🌙</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 ml-[260px] min-h-screen flex flex-col">
+      <!-- Navbar -->
+      <header class="navbar h-[64px] bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm transition-colors duration-300">
+        <button data-sidebar-toggle class="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white">
+          ☰
+        </button>
+        
+        <div class="navbar-search flex-1 max-w-[420px] relative">
+          <span class="search-icon absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+          <input type="text" placeholder="Buscar hábitos..." class="w-full pl-10 pr-12 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:border-primary dark:focus:border-primary transition-all">
+          <kbd class="kbd-badge absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-1.5 py-0.5 rounded">Ctrl+K</kbd>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline" id="header-date">LoopFlow</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" title="Conexión de base de datos activa"></div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="page-content p-8 flex-grow max-w-7xl w-full mx-auto space-y-8 animate-fade-in">
+        
+        <!-- Header / Actions ("Job Postings" Style) -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
+          <div>
+            <h1 class="font-serif text-3xl font-bold text-slate-900 dark:text-white">Lista de Hábitos</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Sigue y mantén tus hábitos para romper todas tus rachas.</p>
+          </div>
+          <div>
+            <button onclick="openCreateModal()" class="px-5 py-3 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm shadow-md transition duration-200 transform hover:-translate-y-[1px] flex items-center gap-2">
+              ➕ Crear nuevo hábito
+            </button>
+          </div>
+        </div>
+
+        <!-- Habits Table / Row List ("Job Postings" Layout) -->
+        <section class="space-y-4" id="habits-list-container">
+          <!-- Skeletons -->
+          <div class="animate-pulse space-y-4">
+            <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+            <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+            <div class="h-20 bg-slate-100 dark:bg-slate-800 rounded-xl"></div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-slate-100 dark:border-slate-800 py-6 bg-white dark:bg-slate-950 text-center text-xs text-slate-400">
+        <p>© 2026 LoopFlow. Todos los derechos reservados. Desarrollado con HTML5, Tailwind CSS y Vanilla JS.</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Sleek Modal for Habit Creation / Edition -->
+  <div id="habit-modal" class="modal-backdrop flex items-center justify-center">
+    <div class="modal w-full max-w-lg p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform transition-all duration-300">
+      
+      <div class="modal-header border-b border-slate-100 dark:border-slate-800 pb-4 flex justify-between items-center">
+        <h3 id="modal-title" class="font-serif text-xl font-bold text-slate-900 dark:text-white">Crear Nuevo Hábito</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl font-bold">×</button>
+      </div>
+
+      <form id="habit-form" onsubmit="saveHabit(event)" class="modal-body space-y-4 py-4">
+        <input type="hidden" id="habit-id">
+        
+        <div class="form-group">
+          <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Nombre del Hábito *</label>
+          <input type="text" id="habit-name" required placeholder="Ej: Meditar por la mañana" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Descripción</label>
+          <textarea id="habit-description" rows="2" placeholder="Escribe el porqué o detalles de este hábito..." class="form-control"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Categoría *</label>
+            <select id="habit-category" required class="form-control">
+              <!-- Carga dinámica -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Frecuencia *</label>
+            <select id="habit-frequency" required class="form-control">
+              <option value="DAILY">Diaria</option>
+              <option value="WEEKLY">Semanal</option>
+              <option value="MONTHLY">Mensual</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Meta (en días) *</label>
+            <input type="number" id="habit-goal" required min="1" max="365" value="30" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Fecha de Inicio *</label>
+            <input type="date" id="habit-start-date" required class="form-control">
+          </div>
+        </div>
+
+        <div class="modal-footer pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Hábito</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Central Javascript dependencies -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let categoriesList = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('header-date').textContent = window.Format.date(new Date());
+      loadHabits();
+    });
+
+    async function loadHabits() {
+      const container = document.getElementById('habits-list-container');
+      
+      try {
+        // Cargar categorías y guardarlas
+        categoriesList = await window.LoopFlowAPI.categories.getAll();
+        const categoryMap = {};
+        categoriesList.forEach(c => { categoryMap[c.id] = c; });
+
+        // Cargar hábitos activos e inactivos
+        const habits = await window.LoopFlowAPI.habits.getAll();
+
+        if (habits.length === 0) {
+          container.innerHTML = `
+            <div class="card p-12 text-center text-slate-400 dark:text-slate-500">
+              <p class="text-xl font-serif font-bold text-slate-700 dark:text-slate-300 mb-2">No tienes ningún hábito creado</p>
+              <p class="text-sm max-w-md mx-auto mb-6">El seguimiento diario de hábitos consolida rachas exitosas a largo plazo. ¡Crea tu primer hábito ahora!</p>
+              <button onclick="openCreateModal()" class="btn btn-primary mx-auto">🎯 Crear primer hábito</button>
+            </div>
+          `;
+          return;
+        }
+
+        // Renderizar cada fila al estilo "Job Postings"
+        let htmlRows = '';
+        for (const h of habits) {
+          const cat = categoryMap[h.categoryId] || { name: 'Sin Categoría', color: '#94a3b8' };
+          
+          // Buscar estadísticas dinámicas por hábito
+          let stats = { streak: 0, completionRate: 0.0 };
+          try {
+            stats = await window.LoopFlowAPI.habits.getStats(h.id);
+          } catch(e) { console.error('Error cargando stats de hábito:', h.id, e); }
+
+          htmlRows += `
+            <div class="p-6 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition duration-200">
+              
+              <!-- Left Info: Name & tags -->
+              <div class="flex-grow space-y-3">
+                <div class="flex flex-wrap items-center gap-3">
+                  <h3 class="font-serif text-xl font-bold text-slate-900 dark:text-white ${!h.active ? 'line-through text-slate-400 dark:text-slate-600' : ''}">
+                    ${window.escapeHtml(h.name)}
+                  </h3>
+                  <span class="px-2.5 py-0.5 text-xs font-bold rounded-full text-white" style="background-color: ${cat.color}">
+                    ${window.escapeHtml(cat.name)}
+                  </span>
+                  ${!h.active ? '<span class="badge badge-gray">Archivado</span>' : ''}
+                </div>
+                
+                <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-1">${window.escapeHtml(h.description || 'Sin descripción')}</p>
+                
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-400">
+                  <span class="flex items-center gap-1.5"><strong class="font-semibold text-slate-600 dark:text-slate-400">Frecuencia:</strong> ${window.Format.frequency(h.frequency)}</span>
+                  <span class="flex items-center gap-1.5"><strong class="font-semibold text-slate-600 dark:text-slate-400">Meta:</strong> ${h.goalDays} días</span>
+                  <span class="flex items-center gap-1.5"><strong class="font-semibold text-slate-600 dark:text-slate-400">Inicio:</strong> ${window.Format.date(h.startDate)}</span>
+                </div>
+              </div>
+
+              <!-- Middle: Stats & Metrics -->
+              <div class="flex items-center gap-8 border-t md:border-t-0 border-slate-100 dark:border-slate-900 pt-4 md:pt-0">
+                <div class="text-center">
+                  <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-0.5">Racha Actual</span>
+                  <span class="text-xl font-bold text-emerald-500 flex items-center justify-center gap-1">
+                    🔥 ${stats.streak} ${stats.streak === 1 ? 'día' : 'días'}
+                  </span>
+                </div>
+                <div class="text-center">
+                  <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-0.5">Cumplimiento</span>
+                  <span class="text-xl font-bold text-primary flex items-center justify-center gap-1">
+                    📈 ${stats.completionRate}%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Right: Check completion button & Actions -->
+              <div class="flex items-center justify-end gap-3 border-t md:border-t-0 border-slate-100 dark:border-slate-900 pt-4 md:pt-0">
+                ${h.active ? `
+                  <button onclick="editHabit(${h.id})" class="btn btn-secondary btn-sm" title="Editar Hábito">✏️</button>
+                  <button onclick="archiveHabit(${h.id})" class="btn btn-secondary btn-sm" title="Archivar Hábito">📦</button>
+                ` : ''}
+                <button onclick="deleteHabit(${h.id})" class="btn btn-danger btn-sm" title="Eliminar Hábito">🗑️</button>
+              </div>
+
+            </div>
+          `;
+        }
+        container.innerHTML = htmlRows;
+      } catch (error) {
+        console.error('Error cargando lista de hábitos:', error);
+        container.innerHTML = `
+          <div class="card p-6 text-center text-red-500">
+            <p>Error al comunicarse con el servidor. Por favor, verifica el estado de tu base de datos Clever Cloud.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Modal Control
+    function openCreateModal() {
+      document.getElementById('modal-title').textContent = 'Crear Nuevo Hábito';
+      document.getElementById('habit-id').value = '';
+      document.getElementById('habit-form').reset();
+      
+      // Default Start date is today
+      document.getElementById('habit-start-date').value = new Date().toISOString().split('T')[0];
+      
+      renderCategoriesDropdown();
+      
+      const modal = document.getElementById('habit-modal');
+      modal.classList.add('open');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('habit-modal');
+      modal.classList.remove('open');
+    }
+
+    function renderCategoriesDropdown(selectedId = null) {
+      const select = document.getElementById('habit-category');
+      select.innerHTML = categoriesList.map(c => `
+        <option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>
+          ${window.escapeHtml(c.name)}
+        </option>
+      `).join('');
+    }
+
+    async function editHabit(id) {
+      try {
+        const h = await window.LoopFlowAPI.habits.getById(id);
+        
+        document.getElementById('modal-title').textContent = 'Editar Hábito';
+        document.getElementById('habit-id').value = h.id;
+        document.getElementById('habit-name').value = h.name;
+        document.getElementById('habit-description').value = h.description || '';
+        document.getElementById('habit-frequency').value = h.frequency;
+        document.getElementById('habit-goal').value = h.goalDays;
+        
+        // Format startDate properly for inputs (YYYY-MM-DD)
+        const datePart = h.startDate.split('T')[0];
+        document.getElementById('habit-start-date').value = datePart;
+
+        renderCategoriesDropdown(h.categoryId);
+
+        document.getElementById('habit-modal').classList.add('open');
+      } catch (e) {
+        console.error('Error al abrir editor:', e);
+        if (window.Toast) window.Toast.error('No se pudo cargar la información del hábito.');
+      }
+    }
+
+    async function saveHabit(event) {
+      event.preventDefault();
+      
+      const id = document.getElementById('habit-id').value;
+      const name = document.getElementById('habit-name').value;
+      const description = document.getElementById('habit-description').value;
+      const categoryId = parseInt(document.getElementById('habit-category').value);
+      const frequency = document.getElementById('habit-frequency').value;
+      const goalDays = parseInt(document.getElementById('habit-goal').value);
+      const startDate = document.getElementById('habit-start-date').value;
+
+      const payload = {
+        name,
+        description,
+        categoryId,
+        frequency,
+        goalDays,
+        startDate
+      };
+
+      try {
+        if (id) {
+          // Update
+          await window.LoopFlowAPI.habits.update(parseInt(id), payload);
+          if (window.Toast) window.Toast.success('Hábito actualizado correctamente.');
+        } else {
+          // Create
+          await window.LoopFlowAPI.habits.create(payload);
+          if (window.Toast) window.Toast.success('¡Hábito creado correctamente!');
+        }
+
+        closeModal();
+        loadHabits();
+      } catch (error) {
+        console.error('Error al guardar hábito:', error);
+        if (window.Toast) window.Toast.error(error.message || 'Error al guardar el hábito.');
+      }
+    }
+
+    async function archiveHabit(id) {
+      if (!confirm('¿Estás seguro de archivar este hábito? Ya no se listará en el Dashboard diario.')) return;
+      try {
+        await window.LoopFlowAPI.habits.archive(id);
+        if (window.Toast) window.Toast.success('Hábito archivado exitosamente.');
+        loadHabits();
+      } catch (error) {
+        console.error('Error al archivar hábito:', error);
+        if (window.Toast) window.Toast.error('No se pudo archivar el hábito.');
+      }
+    }
+
+    async function deleteHabit(id) {
+      if (!confirm('¿Estás absolutamente seguro de eliminar este hábito? Esto borrará permanentemente todos sus registros diarios.')) return;
+      try {
+        await window.LoopFlowAPI.habits.delete(id);
+        if (window.Toast) window.Toast.success('Hábito eliminado permanentemente.');
+        loadHabits();
+      } catch (error) {
+        console.error('Error al eliminar hábito:', error);
+        if (window.Toast) window.Toast.error('No se pudo eliminar el hábito.');
+      }
+    }
+  </script>
+</body>
+</html>

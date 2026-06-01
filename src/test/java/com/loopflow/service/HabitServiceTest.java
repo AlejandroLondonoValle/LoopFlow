@@ -186,9 +186,6 @@ class HabitServiceTest {
     @Test
     @DisplayName("getCompletionRate() lanza excepción si from > to")
     void testGetCompletionRate_invalidRange() {
-        Habit habit = buildHabit(1, LocalDate.now().minusDays(10));
-        when(habitDAO.findById(1)).thenReturn(Optional.of(habit));
-
         LocalDate from = LocalDate.now();
         LocalDate to = LocalDate.now().minusDays(1);
 

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tablero Scrum — LoopFlow</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2F49A1',
+              dark: '#1e316e',
+              light: '#4e6cc5',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles (app.css) -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="bg-[#f8f9fc] dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
+
+  <div class="app-shell flex">
+    <!-- Sidebar (Fondo oscuro permanente) -->
+    <aside class="sidebar bg-slate-950 text-slate-200 w-[260px] fixed top-0 bottom-0 left-0 flex flex-col justify-between border-r border-slate-900">
+      <div>
+        <!-- Logo -->
+        <div class="sidebar-logo p-6 border-b border-slate-900 flex items-center justify-between">
+          <a href="index.html" class="font-serif text-xl font-bold tracking-tight text-white">LoopFlow<span class="text-primary">.</span></a>
+          <button data-sidebar-toggle class="md:hidden text-slate-400 hover:text-white">×</button>
+        </div>
+        
+        <!-- Navigation Links -->
+        <div class="sidebar-section py-4">
+          <div class="sidebar-section-label px-6 py-2 text-xs font-semibold text-slate-500 uppercase tracking-widest">Módulos</div>
+          <nav class="space-y-1">
+            <a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">📊</span> Dashboard
+            </a>
+            <a href="habits.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">🎯</span> Hábitos
+            </a>
+            <a href="scrum.html" class="sidebar-link active flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">📋</span> Tablero Scrum
+            </a>
+          </nav>
+        </div>
+      </div>
+      
+      <!-- User Profile & Theme Toggle -->
+      <div class="p-6 border-t border-slate-900 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm">LF</div>
+          <div>
+            <p class="text-sm font-semibold text-white">Usuario</p>
+            <p class="text-xs text-slate-500">Miembro Premium</p>
+          </div>
+        </div>
+        <!-- Dark Mode Toggle -->
+        <button data-toggle-theme class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <span data-theme-icon>🌙</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 ml-[260px] min-h-screen flex flex-col">
+      <!-- Navbar -->
+      <header class="navbar h-[64px] bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm transition-colors duration-300">
+        <button data-sidebar-toggle class="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white">
+          ☰
+        </button>
+        
+        <div class="navbar-search flex-1 max-w-[420px] relative">
+          <span class="search-icon absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+          <input type="text" placeholder="Buscar tareas..." class="w-full pl-10 pr-12 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:border-primary dark:focus:border-primary transition-all">
+          <kbd class="kbd-badge absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-1.5 py-0.5 rounded">Ctrl+K</kbd>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline" id="header-date">Tablero Scrum</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" title="Conexión de base de datos activa"></div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="page-content p-8 flex-grow max-w-7xl w-full mx-auto space-y-8 animate-fade-in">
+        
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h1 class="font-serif text-3xl font-bold text-slate-900 dark:text-white">Tablero Scrum Kanban</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Organiza y desplaza tus actividades en curso de manera ágil.</p>
+          </div>
+          <div>
+            <button onclick="openCreateModal()" class="px-5 py-3 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-sm shadow-md transition duration-200 transform hover:-translate-y-[1px] flex items-center gap-2">
+              ➕ Crear nueva tarea
+            </button>
+          </div>
+        </div>
+
+        <!-- Kanban Board Grid (3 Columns) -->
+        <section class="kanban-board grid grid-cols-1 lg:grid-cols-3 gap-6 items-start" id="kanban-board">
+          
+          <!-- Column: TODO -->
+          <div class="kanban-column flex flex-col rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 min-h-[500px]" data-status="TODO" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="kanban-column-header p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <span class="kanban-column-title text-slate-800 dark:text-slate-200 font-bold tracking-wider text-xs">📝 Por Hacer</span>
+              <span class="kanban-count" id="count-todo">0</span>
+            </div>
+            <div class="kanban-cards flex-grow p-4 space-y-3" id="cards-todo">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+
+          <!-- Column: IN_PROGRESS -->
+          <div class="kanban-column flex flex-col rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 min-h-[500px]" data-status="IN_PROGRESS" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="kanban-column-header p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <span class="kanban-column-title text-slate-800 dark:text-slate-200 font-bold tracking-wider text-xs">⚡ En Progreso</span>
+              <span class="kanban-count" id="count-inprogress">0</span>
+            </div>
+            <div class="kanban-cards flex-grow p-4 space-y-3" id="cards-inprogress">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+
+          <!-- Column: DONE -->
+          <div class="kanban-column flex flex-col rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 min-h-[500px]" data-status="DONE" ondragover="allowDrop(event)" ondragleave="dragLeave(event)" ondrop="handleDrop(event)">
+            <div class="kanban-column-header p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <span class="kanban-column-title text-slate-800 dark:text-slate-200 font-bold tracking-wider text-xs">✅ Hecho</span>
+              <span class="kanban-count" id="count-done">0</span>
+            </div>
+            <div class="kanban-cards flex-grow p-4 space-y-3" id="cards-done">
+              <!-- Carga dinámica -->
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-slate-100 dark:border-slate-800 py-6 bg-white dark:bg-slate-950 text-center text-xs text-slate-400">
+        <p>© 2026 LoopFlow. Todos los derechos reservados. Desarrollado con HTML5, Tailwind CSS y Vanilla JS.</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Sleek Modal for Task Creation -->
+  <div id="task-modal" class="modal-backdrop flex items-center justify-center">
+    <div class="modal w-full max-w-lg p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform transition-all duration-300">
+      <div class="modal-header border-b border-slate-100 dark:border-slate-800 pb-4 flex justify-between items-center">
+        <h3 id="modal-title" class="font-serif text-xl font-bold text-slate-900 dark:text-white">Crear Nueva Tarea</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl font-bold">×</button>
+      </div>
+
+      <form id="task-form" onsubmit="saveTask(event)" class="modal-body space-y-4 py-4">
+        <input type="hidden" id="task-id">
+        
+        <div class="form-group">
+          <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Título de la Tarea *</label>
+          <input type="text" id="task-title" required placeholder="Ej: Implementar landing page en Tailwind" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Descripción detallada</label>
+          <textarea id="task-description" rows="3" placeholder="Escribe el alcance o requerimientos..." class="form-control"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Prioridad *</label>
+            <select id="task-priority" required class="form-control">
+              <option value="LOW">Baja 🟢</option>
+              <option value="MEDIUM" selected>Media 🟡</option>
+              <option value="HIGH">Alta 🟠</option>
+              <option value="CRITICAL">Crítica 🔴</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label font-semibold text-slate-600 dark:text-slate-400">Fecha Límite</label>
+            <input type="date" id="task-due-date" class="form-control">
+          </div>
+        </div>
+
+        <div class="modal-footer pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <button type="button" onclick="closeModal()" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Tarea</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sleek Details & History Audit Modal -->
+  <div id="details-modal" class="modal-backdrop flex items-center justify-center">
+    <div class="modal w-full max-w-2xl p-6 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 transform transition-all duration-300">
+      
+      <div class="modal-header border-b border-slate-100 dark:border-slate-800 pb-4 flex justify-between items-center">
+        <h3 class="font-serif text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          📋 Detalles y Auditoría de Tarea
+        </h3>
+        <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl font-bold">×</button>
+      </div>
+
+      <div class="modal-body space-y-6 py-4 overflow-y-auto max-h-[75vh]">
+        <!-- Title and Priority -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-3 flex-wrap">
+            <h2 id="detail-title" class="font-serif text-2xl font-bold text-slate-900 dark:text-white"></h2>
+            <span id="detail-priority"></span>
+            <span id="detail-status" class="badge"></span>
+          </div>
+          <p class="text-xs text-slate-400">
+            <strong>Fecha Límite:</strong> <span id="detail-due-date"></span>
+          </p>
+        </div>
+
+        <!-- Description -->
+        <div class="space-y-2 bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+          <h4 class="text-xs uppercase font-bold text-slate-400 tracking-wider">Descripción</h4>
+          <p id="detail-description" class="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-line"></p>
+        </div>
+
+        <!-- Audit History -->
+        <div class="space-y-3">
+          <h4 class="text-xs uppercase font-bold text-slate-400 tracking-wider flex items-center gap-1.5">
+            ⌛ Historial de Auditoría (TaskHistory)
+          </h4>
+          
+          <div class="overflow-x-auto border border-slate-100 dark:border-slate-800 rounded-xl">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
+                  <th class="p-3">Fecha y Hora</th>
+                  <th class="p-3">Estado Anterior</th>
+                  <th class="p-3">Nuevo Estado</th>
+                  <th class="p-3">Detalle / Notas</th>
+                </tr>
+              </thead>
+              <tbody id="detail-history-rows" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-600 dark:text-slate-400">
+                <!-- Carga dinámica -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+        <button onclick="editTaskFromDetail()" class="btn btn-secondary text-xs">✏️ Editar</button>
+        <button onclick="deleteTaskFromDetail()" class="btn btn-danger text-xs">🗑️ Eliminar</button>
+        <button onclick="closeDetailsModal()" class="btn btn-primary text-xs">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Central Javascript dependencies -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let activeDragTaskId = null;
+    let selectedDetailTaskId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('header-date').textContent = window.Format.date(new Date());
+      loadKanbanBoard();
+    });
+
+    async function loadKanbanBoard() {
+      const todoContainer = document.getElementById('cards-todo');
+      const inprogressContainer = document.getElementById('cards-inprogress');
+      const doneContainer = document.getElementById('cards-done');
+
+      try {
+        // Cargar todas las tareas
+        const tasks = await window.LoopFlowAPI.tasks.getAll();
+
+        // Clasificar tareas por estado
+        const todoList = tasks.filter(t => t.status === 'TODO');
+        const inprogressList = tasks.filter(t => t.status === 'IN_PROGRESS');
+        const doneList = tasks.filter(t => t.status === 'DONE');
+
+        // Contadores
+        document.getElementById('count-todo').textContent = todoList.length;
+        document.getElementById('count-inprogress').textContent = inprogressList.length;
+        document.getElementById('count-done').textContent = doneList.length;
+
+        // Renderizar Columnas
+        renderColumn(todoContainer, todoList);
+        renderColumn(inprogressContainer, inprogressList);
+        renderColumn(doneContainer, doneList);
+
+      } catch (error) {
+        console.error('Error cargando Kanban Board:', error);
+        if (window.Toast) window.Toast.error('Error al conectar con la base de datos.');
+      }
+    }
+
+    function renderColumn(container, tasksList) {
+      if (tasksList.length === 0) {
+        container.innerHTML = `
+          <div class="kanban-drop-zone text-center p-6 text-slate-400 flex flex-col justify-center items-center select-none">
+            <span class="text-xl mb-1">📭</span>
+            <span>Vacío</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tasksList.map(t => `
+        <div class="kanban-card bg-white dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition cursor-grab" 
+             draggable="true" 
+             ondragstart="handleDragStart(event, ${t.id})" 
+             ondragend="handleDragEnd(event)"
+             onclick="openDetailsModal(${t.id})">
+             
+          <div class="kanban-card-title text-slate-800 dark:text-slate-100 font-semibold text-sm leading-snug">${window.escapeHtml(t.title)}</div>
+          
+          <p class="text-xs text-slate-400 dark:text-slate-500 line-clamp-2 mt-1 mb-3">${window.escapeHtml(t.description || 'Sin descripción')}</p>
+          
+          <div class="kanban-card-meta flex items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-900/60 pt-2.5">
+            ${window.priorityBadge(t.priority)}
+            <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+              📅 ${window.Format.dateRelative(t.dueDate)}
+            </span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // HTML5 Drag and Drop Handlers
+    function handleDragStart(event, taskId) {
+      activeDragTaskId = taskId;
+      event.target.classList.add('dragging');
+      event.dataTransfer.setData('text/plain', taskId);
+      event.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(event) {
+      event.target.classList.remove('dragging');
+      document.querySelectorAll('.kanban-column').forEach(col => col.classList.remove('drag-over', 'bg-slate-100', 'dark:bg-slate-800/40'));
+    }
+
+    function allowDrop(event) {
+      event.preventDefault();
+      const col = event.currentTarget;
+      col.classList.add('drag-over', 'bg-slate-100', 'dark:bg-slate-800/40');
+    }
+
+    function dragLeave(event) {
+      const col = event.currentTarget;
+      col.classList.remove('drag-over', 'bg-slate-100', 'dark:bg-slate-800/40');
+    }
+
+    async function handleDrop(event) {
+      event.preventDefault();
+      const col = event.currentTarget;
+      col.classList.remove('drag-over', 'bg-slate-100', 'dark:bg-slate-800/40');
+
+      const targetStatus = col.getAttribute('data-status');
+      const taskId = parseInt(event.dataTransfer.getData('text/plain') || activeDragTaskId);
+
+      if (isNaN(taskId)) return;
+
+      try {
+        // Enviar PATCH al backend
+        await window.LoopFlowAPI.tasks.move(taskId, targetStatus);
+        if (window.Toast) window.Toast.success(`Tarea movida a ${window.Format.status(targetStatus)}`);
+        
+        loadKanbanBoard();
+      } catch (error) {
+        console.error('Error al mover tarea:', error);
+        if (window.Toast) window.Toast.error(error.message || 'No se pudo mover la tarea.');
+      } finally {
+        activeDragTaskId = null;
+      }
+    }
+
+    // Modal Control: Creation
+    function openCreateModal() {
+      document.getElementById('modal-title').textContent = 'Crear Nueva Tarea';
+      document.getElementById('task-id').value = '';
+      document.getElementById('task-form').reset();
+      
+      // Default due date is tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('task-due-date').value = tomorrow.toISOString().split('T')[0];
+
+      document.getElementById('task-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('task-modal').classList.remove('open');
+    }
+
+    async function saveTask(event) {
+      event.preventDefault();
+      
+      const id = document.getElementById('task-id').value;
+      const title = document.getElementById('task-title').value;
+      const description = document.getElementById('task-description').value;
+      const priority = document.getElementById('task-priority').value;
+      const dueDate = document.getElementById('task-due-date').value || null;
+
+      const payload = {
+        title,
+        description,
+        priority,
+        dueDate
+      };
+
+      try {
+        if (id) {
+          // Update
+          await window.LoopFlowAPI.tasks.update(parseInt(id), payload);
+          if (window.Toast) window.Toast.success('Tarea actualizada correctamente.');
+        } else {
+          // Create
+          await window.LoopFlowAPI.tasks.create(payload);
+          if (window.Toast) window.Toast.success('¡Tarea creada exitosamente!');
+        }
+
+        closeModal();
+        loadKanbanBoard();
+      } catch (error) {
+        console.error('Error al guardar tarea:', error);
+        if (window.Toast) window.Toast.error(error.message || 'Error al guardar la tarea.');
+      }
+    }
+
+    // Modal Control: Details & Auditable History
+    async function openDetailsModal(taskId) {
+      selectedDetailTaskId = taskId;
+      
+      try {
+        const t = await window.LoopFlowAPI.tasks.getById(taskId);
+        const historyList = await window.LoopFlowAPI.tasks.getHistory(taskId);
+
+        // Render info
+        document.getElementById('detail-title').textContent = t.title;
+        document.getElementById('detail-priority').innerHTML = window.priorityBadge(t.priority);
+        
+        const isProgress = t.status === 'IN_PROGRESS';
+        const isDone = t.status === 'DONE';
+        const statusBadge = document.getElementById('detail-status');
+        statusBadge.textContent = window.Format.status(t.status);
+        statusBadge.className = `badge ${
+          isDone 
+            ? 'badge-green' 
+            : isProgress 
+              ? 'badge-blue' 
+              : 'badge-yellow'
+        }`;
+
+        document.getElementById('detail-due-date').textContent = window.Format.date(t.dueDate);
+        document.getElementById('detail-description').textContent = t.description || 'Sin descripción';
+
+        // Render audit history rows
+        const rowsContainer = document.getElementById('detail-history-rows');
+        if (historyList.length === 0) {
+          rowsContainer.innerHTML = `
+            <tr>
+              <td colspan="4" class="p-4 text-center text-slate-400">Sin historial registrado</td>
+            </tr>
+          `;
+        } else {
+          rowsContainer.innerHTML = historyList.map(h => `
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40">
+              <td class="p-3 whitespace-nowrap text-slate-400 font-semibold">${window.Format.date(h.changedAt)}</td>
+              <td class="p-3"><span class="badge badge-gray">${window.Format.status(h.oldStatus) || 'Creada'}</span></td>
+              <td class="p-3"><span class="badge ${
+                h.newStatus === 'DONE' 
+                  ? 'badge-green' 
+                  : h.newStatus === 'IN_PROGRESS' 
+                    ? 'badge-blue' 
+                    : 'badge-yellow'
+              }">${window.Format.status(h.newStatus)}</span></td>
+              <td class="p-3 text-slate-500">${window.escapeHtml(h.notes || 'Sin observaciones')}</td>
+            </tr>
+          `).join('');
+        }
+
+        document.getElementById('details-modal').classList.add('open');
+      } catch (error) {
+        console.error('Error abriendo detalles de tarea:', error);
+        if (window.Toast) window.Toast.error('No se pudo cargar la información del historial.');
+      }
+    }
+
+    function closeDetailsModal() {
+      document.getElementById('details-modal').classList.remove('open');
+      selectedDetailTaskId = null;
+    }
+
+    async function editTaskFromDetail() {
+      const id = selectedDetailTaskId;
+      closeDetailsModal();
+      
+      try {
+        const t = await window.LoopFlowAPI.tasks.getById(id);
+        
+        document.getElementById('modal-title').textContent = 'Editar Tarea';
+        document.getElementById('task-id').value = t.id;
+        document.getElementById('task-title').value = t.title;
+        document.getElementById('task-description').value = t.description || '';
+        document.getElementById('task-priority').value = t.priority;
+        
+        const datePart = t.dueDate ? t.dueDate.split('T')[0] : '';
+        document.getElementById('task-due-date').value = datePart;
+
+        document.getElementById('task-modal').classList.add('open');
+      } catch (e) {
+        console.error('Error al editar:', e);
+        if (window.Toast) window.Toast.error('No se pudo cargar el editor.');
+      }
+    }
+
+    async function deleteTaskFromDetail() {
+      const id = selectedDetailTaskId;
+      if (!confirm('¿Estás seguro de eliminar permanentemente esta tarea?')) return;
+
+      try {
+        await window.LoopFlowAPI.tasks.delete(id);
+        if (window.Toast) window.Toast.success('Tarea eliminada permanentemente.');
+        closeDetailsModal();
+        loadKanbanBoard();
+      } catch (error) {
+        console.error('Error al eliminar:', error);
+        if (window.Toast) window.Toast.error('No se pudo eliminar la tarea.');
+      }
+    }
+  </script>
+</body>
+</html>

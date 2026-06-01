@@ -31,13 +31,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         // --- Puerto ---
-        int port = 8080;
+        int port = 9000;
         String portEnv = System.getenv("PORT");
         if (portEnv != null && !portEnv.isBlank()) {
             try {
                 port = Integer.parseInt(portEnv);
             } catch (NumberFormatException e) {
-                LOGGER.warning("Valor de PORT inválido: " + portEnv + ". Usando 8080.");
+                LOGGER.warning("Valor de PORT inválido: " + portEnv + ". Usando 9000.");
             }
         }
 

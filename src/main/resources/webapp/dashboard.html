@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — LoopFlow</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2F49A1',
+              dark: '#1e316e',
+              light: '#4e6cc5',
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles (app.css) -->
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="bg-[#f8f9fc] dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen font-sans transition-colors duration-300">
+
+  <div class="app-shell flex">
+    <!-- Sidebar (Fondo oscuro permanente) -->
+    <aside class="sidebar bg-slate-950 text-slate-200 w-[260px] fixed top-0 bottom-0 left-0 flex flex-col justify-between border-r border-slate-900">
+      <div>
+        <!-- Logo -->
+        <div class="sidebar-logo p-6 border-b border-slate-900 flex items-center justify-between">
+          <a href="index.html" class="font-serif text-xl font-bold tracking-tight text-white">LoopFlow<span class="text-primary">.</span></a>
+          <button data-sidebar-toggle class="md:hidden text-slate-400 hover:text-white">×</button>
+        </div>
+        
+        <!-- Navigation Links -->
+        <div class="sidebar-section py-4">
+          <div class="sidebar-section-label px-6 py-2 text-xs font-semibold text-slate-500 uppercase tracking-widest">Módulos</div>
+          <nav class="space-y-1">
+            <a href="dashboard.html" class="sidebar-link active flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">📊</span> Dashboard
+            </a>
+            <a href="habits.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">🎯</span> Hábitos
+            </a>
+            <a href="scrum.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
+              <span class="link-icon">📋</span> Tablero Scrum
+            </a>
+          </nav>
+        </div>
+      </div>
+      
+      <!-- User Profile & Theme Toggle -->
+      <div class="p-6 border-t border-slate-900 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm">LF</div>
+          <div>
+            <p class="text-sm font-semibold text-white">Usuario</p>
+            <p class="text-xs text-slate-500">Miembro Premium</p>
+          </div>
+        </div>
+        <!-- Dark Mode Toggle -->
+        <button data-toggle-theme class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white transition">
+          <span data-theme-icon>🌙</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 ml-[260px] min-h-screen flex flex-col">
+      <!-- Navbar -->
+      <header class="navbar h-[64px] bg-white dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-30 shadow-sm transition-colors duration-300">
+        <!-- Sidebar Toggle (Mobile only) -->
+        <button data-sidebar-toggle class="md:hidden p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white">
+          ☰
+        </button>
+        
+        <!-- Search bar (Ctrl+K style) -->
+        <div class="navbar-search flex-1 max-w-[420px] relative">
+          <span class="search-icon absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+          <input type="text" placeholder="Buscar hábitos o tareas..." class="w-full pl-10 pr-12 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:border-primary dark:focus:border-primary transition-all">
+          <kbd class="kbd-badge absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-1.5 py-0.5 rounded">Ctrl+K</kbd>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="flex items-center gap-4">
+          <span class="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline" id="current-date-span">Cargando fecha...</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" title="Conexión de base de datos activa"></div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="page-content p-8 flex-grow max-w-7xl w-full mx-auto space-y-8 animate-fade-in">
+        
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 class="font-serif text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Mi Dashboard</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Tu perspectiva unificada del día actual.</p>
+          </div>
+          <div class="flex gap-3">
+            <a href="habits.html" class="btn btn-secondary text-sm">🎯 Crear Hábito</a>
+            <a href="scrum.html" class="btn btn-primary text-sm">📋 Nueva Tarea</a>
+          </div>
+        </div>
+
+        <!-- Stats Overview Cards -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="stat-card p-6 flex flex-col justify-between">
+            <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500">Hábitos Completados</span>
+            <div class="flex items-baseline gap-2 mt-2">
+              <span class="text-3xl font-bold text-emerald-500" id="habits-completed-stat">0</span>
+              <span class="text-sm text-slate-400" id="habits-total-stat">/ 0</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">¡Haz completado tu meta del día!</p>
+          </div>
+          
+          <div class="stat-card p-6 flex flex-col justify-between">
+            <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500">Hábitos Pendientes</span>
+            <div class="mt-2">
+              <span class="text-3xl font-bold text-amber-500" id="habits-pending-stat">0</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">Faltan por completar hoy.</p>
+          </div>
+
+          <div class="stat-card p-6 flex flex-col justify-between">
+            <span class="text-xs uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500">Tareas en Curso</span>
+            <div class="mt-2">
+              <span class="text-3xl font-bold text-blue-500" id="tasks-progress-stat">0</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">Tareas Scrum en progreso.</p>
+          </div>
+
+          <div class="stat-card stat-card-primary p-6 flex flex-col justify-between text-white">
+            <span class="text-xs uppercase tracking-wider font-semibold text-blue-200">Tasa de Flujo</span>
+            <div class="mt-2">
+              <span class="text-3xl font-bold" id="flow-rate-stat">0%</span>
+            </div>
+            <p class="text-xs text-blue-200 mt-2">Cumplimiento total hoy.</p>
+          </div>
+        </section>
+
+        <!-- Main Column Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          
+          <!-- Left: Hábitos del Día (3 Columns) -->
+          <section class="lg:col-span-3 space-y-6">
+            <div class="card p-6 flex flex-col h-full justify-between">
+              <div>
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
+                  <h2 class="font-serif text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    🎯 Hábitos de Hoy
+                  </h2>
+                  <span class="text-xs px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold">Activos</span>
+                </div>
+                
+                <div class="space-y-3" id="habits-list-container">
+                  <!-- Skeleton placeholder -->
+                  <div class="animate-pulse space-y-3">
+                    <div class="h-14 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+                    <div class="h-14 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="border-t border-slate-100 dark:border-slate-800 pt-4 mt-6 flex justify-between text-xs text-slate-400">
+                <span>Tip: Haz clic en el círculo verde al cumplir un hábito.</span>
+                <a href="habits.html" class="text-primary hover:underline font-semibold">Configurar Hábitos →</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Right: Tareas Pendientes (2 Columns) -->
+          <section class="lg:col-span-2 space-y-6">
+            <div class="card p-6 flex flex-col h-full justify-between">
+              <div>
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
+                  <h2 class="font-serif text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    📋 Tareas Pendientes
+                  </h2>
+                  <a href="scrum.html" class="text-xs text-primary hover:underline font-semibold">Ir al Tablero →</a>
+                </div>
+                
+                <div class="space-y-3" id="tasks-list-container">
+                  <!-- Skeleton placeholder -->
+                  <div class="animate-pulse space-y-3">
+                    <div class="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+                    <div class="h-16 bg-slate-100 dark:bg-slate-800 rounded-lg"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="border-t border-slate-100 dark:border-slate-800 pt-4 mt-6 text-center">
+                <p class="text-xs text-slate-400">Solo se muestran tareas en estado "Por hacer" o "En progreso".</p>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="border-t border-slate-100 dark:border-slate-800 py-6 bg-white dark:bg-slate-950 text-center text-xs text-slate-400">
+        <p>© 2026 LoopFlow. Todos los derechos reservados. Desarrollado con HTML5, Tailwind CSS y Vanilla JS.</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Central Javascript dependencies -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Configuración y consumos dinámicos de API
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDashboard();
+    });
+
+    async function loadDashboard() {
+      const habitsContainer = document.getElementById('habits-list-container');
+      const tasksContainer = document.getElementById('tasks-list-container');
+      const currentDateSpan = document.getElementById('current-date-span');
+
+      try {
+        // Consumir API del Dashboard
+        const summary = await window.LoopFlowAPI.dashboard.getSummary();
+
+        // 1. Mostrar fecha actual
+        const dateStr = window.Format.date(summary.date);
+        currentDateSpan.textContent = dateStr;
+
+        // 2. Renderizar Contadores / Stats
+        document.getElementById('habits-completed-stat').textContent = summary.habitsCompletedToday;
+        document.getElementById('habits-total-stat').textContent = `/ ${summary.totalHabits}`;
+        document.getElementById('habits-pending-stat').textContent = summary.habitsPendingToday;
+        document.getElementById('tasks-progress-stat').textContent = summary.inProgressTasks.length;
+        
+        // Calcular Tasa de Flujo
+        const flowRate = summary.totalHabits > 0 
+          ? Math.round((summary.habitsCompletedToday / summary.totalHabits) * 100) 
+          : 0;
+        document.getElementById('flow-rate-stat').textContent = `${flowRate}%`;
+
+        // 3. Renderizar Hábitos del Día
+        if (summary.habits.length === 0) {
+          habitsContainer.innerHTML = `
+            <div class="text-center py-8 text-slate-400 dark:text-slate-500">
+              <p class="text-lg">🎯 No hay hábitos creados</p>
+              <p class="text-xs mt-1">Crea un hábito activo en la sección de Hábitos para ver tu progreso diario.</p>
+            </div>
+          `;
+        } else {
+          // Obtener categorías para renderizar colores
+          const categories = await window.LoopFlowAPI.categories.getAll();
+          const categoryMap = {};
+          categories.forEach(c => { categoryMap[c.id] = c; });
+
+          habitsContainer.innerHTML = summary.habits.map(item => {
+            const h = item.habit;
+            const completed = item.completedToday;
+            const cat = categoryMap[h.categoryId] || { name: 'Sin Categoría', color: '#94a3b8' };
+            
+            return `
+              <div class="habit-card p-4 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 transition hover:shadow-md">
+                <div class="flex items-center gap-4">
+                  <!-- Checkbox Circle button -->
+                  <button onclick="toggleHabit(${h.id}, ${completed})" 
+                          class="w-7 h-7 rounded-full flex items-center justify-center border-2 transition duration-200 ${
+                            completed 
+                              ? 'bg-emerald-500 border-emerald-500 text-white' 
+                              : 'border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:bg-emerald-500/10 text-transparent hover:text-emerald-500'
+                          }">
+                    ✓
+                  </button>
+                  <div>
+                    <h3 class="font-serif font-semibold text-base text-slate-800 dark:text-slate-200 ${completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${window.escapeHtml(h.name)}</h3>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="px-2 py-0.5 text-[10px] font-bold rounded-full text-white" style="background-color: ${cat.color}">
+                        ${window.escapeHtml(cat.name)}
+                      </span>
+                      <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
+                        Frecuencia: ${window.Format.frequency(h.frequency)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                  <div class="text-right hidden sm:block">
+                    <span class="text-xs font-semibold text-slate-500">Meta</span>
+                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300">${h.goalDays} días</p>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // 4. Renderizar Tareas Pendientes
+        const pendingTasks = [...summary.todoTasks, ...summary.inProgressTasks];
+        if (pendingTasks.length === 0) {
+          tasksContainer.innerHTML = `
+            <div class="text-center py-8 text-slate-400 dark:text-slate-500">
+              <p class="text-lg">📋 Todo al día</p>
+              <p class="text-xs mt-1">No tienes tareas pendientes por hacer. ¡Buen trabajo!</p>
+            </div>
+          `;
+        } else {
+          tasksContainer.innerHTML = pendingTasks.map(t => {
+            const isProgress = t.status === 'IN_PROGRESS';
+            return `
+              <div class="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-start justify-between hover:shadow-md transition">
+                <div>
+                  <h4 class="font-semibold text-sm text-slate-800 dark:text-slate-200">${window.escapeHtml(t.title)}</h4>
+                  <p class="text-xs text-slate-400 dark:text-slate-500 line-clamp-1 mt-1">${window.escapeHtml(t.description || 'Sin descripción')}</p>
+                  
+                  <div class="flex items-center gap-2 mt-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                      isProgress 
+                        ? 'bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400' 
+                        : 'bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400'
+                    }">
+                      ${isProgress ? 'En progreso' : 'Por hacer'}
+                    </span>
+                    ${window.priorityBadge(t.priority)}
+                  </div>
+                </div>
+                
+                <span class="text-[10px] font-bold text-slate-400">
+                  ${window.Format.dateRelative(t.dueDate)}
+                </span>
+              </div>
+            `;
+          }).join('');
+        }
+
+      } catch (error) {
+        console.error('Error al cargar dashboard:', error);
+        if (window.Toast) {
+          window.Toast.error('No se pudo establecer conexión con la base de datos.');
+        }
+      }
+    }
+
+    // Toggle de estado de hábito
+    async function toggleHabit(habitId, currentCompleted) {
+      try {
+        const newStatus = !currentCompleted;
+        await window.LoopFlowAPI.habits.complete(habitId, newStatus, newStatus ? 'Completado desde el Dashboard' : 'Desmarcado');
+        
+        // Mostrar Toast de éxito
+        if (window.Toast) {
+          window.Toast.success(newStatus ? '¡Hábito marcado como completado!' : 'Hábito desmarcado');
+        }
+        
+        // Recargar datos
+        loadDashboard();
+      } catch (error) {
+        console.error('Error al actualizar hábito:', error);
+        if (window.Toast) {
+          window.Toast.error('No se pudo guardar la actualización.');
+        }
+      }
+    }
+  </script>
+</body>
+</html>

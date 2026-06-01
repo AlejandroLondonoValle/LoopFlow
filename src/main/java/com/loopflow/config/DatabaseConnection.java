@@ -2,6 +2,8 @@ package com.loopflow.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.io.InputStream;
+import java.util.Properties;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,13 +13,18 @@ import java.util.logging.Logger;
 /**
  * Singleton thread-safe para la conexión a la base de datos MySQL.
  *
- * <p>Las credenciales se cargan con la siguiente prioridad:
+ * <p>
+ * Las credenciales se cargan con la siguiente prioridad:
  * <ol>
- *   <li>Variables de entorno del sistema (ej. configuradas en Render.com / Clever Cloud).</li>
- *   <li>Archivo {@code .env} en el directorio raíz del proyecto (para desarrollo local).</li>
+ * <li>Archivo {@code db.properties} en el classpath (resources).</li>
+ * <li>Variables de entorno del sistema (ej. configuradas en Render.com / Clever
+ * Cloud).</li>
+ * <li>Archivo {@code .env} en el directorio raíz del proyecto (para desarrollo
+ * local).</li>
  * </ol>
  *
- * <p>Variables requeridas: {@code DB_URL}, {@code DB_USER}, {@code DB_PASSWORD}.
+ * <p>
+ * Variables requeridas: {@code DB_URL}, {@code DB_USER}, {@code DB_PASSWORD} o equivalentes en db.properties.
  */
 public class DatabaseConnection {
 
@@ -36,6 +43,7 @@ public class DatabaseConnection {
             .ignoreIfMissing()
             .load();
 
+    private final String driver;
     private final String url;
     private final String user;
     private final String password;
@@ -43,15 +51,34 @@ public class DatabaseConnection {
     // --- Constructor privado (patrón Singleton) ---
 
     private DatabaseConnection() {
-        this.url      = getEnvVar("DB_URL");
-        this.user     = getEnvVar("DB_USER");
-        this.password = getEnvVar("DB_PASSWORD");
+        Properties properties = new Properties();
+        String propDriver = null;
+        String propUrl = null;
+        String propUser = null;
+        String propPassword = null;
+
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("db.properties")) {
+            if (input != null) {
+                properties.load(input);
+                propDriver = properties.getProperty("db.driver");
+                propUrl = properties.getProperty("db.url");
+                propUser = properties.getProperty("db.user");
+                propPassword = properties.getProperty("db.password");
+                LOGGER.info("Configuración de base de datos cargada desde db.properties.");
+            }
+        } catch (Exception e) {
+            LOGGER.warning("No se pudo cargar db.properties: " + e.getMessage());
+        }
+
+        this.driver = propDriver != null && !propDriver.isBlank() ? propDriver : "com.mysql.cj.jdbc.Driver";
+        this.url = propUrl != null && !propUrl.isBlank() ? propUrl : getEnvVar("DB_URL");
+        this.user = propUser != null && !propUser.isBlank() ? propUser : getEnvVar("DB_USER");
+        this.password = propPassword != null && !propPassword.isBlank() ? propPassword : getEnvVar("DB_PASSWORD");
 
         if (this.url == null || this.user == null || this.password == null) {
             throw new IllegalStateException(
-                "Faltan variables de entorno: DB_URL, DB_USER y/o DB_PASSWORD. " +
-                "Crea un archivo .env basado en .env.example o defínelas en el entorno del sistema."
-            );
+                    "Faltan variables de configuración de base de datos. " +
+                            "Asegúrate de configurar db.properties en resources o variables de entorno (DB_URL, DB_USER, DB_PASSWORD).");
         }
 
         connect();
@@ -84,13 +111,11 @@ public class DatabaseConnection {
      */
     private void connect() {
         try {
-            // MySQL Connector/J 8+ registra el driver vía ServiceLoader — Class.forName no es estrictamente necesario,
-            // pero lo mantenemos para compatibilidad explícita.
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(driver);
             this.connection = DriverManager.getConnection(url, user, password);
             LOGGER.info("Conexión a la base de datos establecida exitosamente.");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Driver MySQL no encontrado en el classpath.", e);
+            throw new RuntimeException("Driver no encontrado en el classpath: " + driver, e);
         } catch (SQLException e) {
             throw new RuntimeException("No se pudo conectar a la base de datos: " + e.getMessage(), e);
         }
