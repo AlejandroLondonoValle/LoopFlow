@@ -8,6 +8,14 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
 /**
@@ -18,6 +26,7 @@ import java.util.List;
 @Path("/categories")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Tag(name = "Categorías", description = "Endpoints para la administración y organización de categorías de LoopFlow")
 public class CategoryController {
 
     private final CategoryService service;
@@ -30,6 +39,17 @@ public class CategoryController {
 
     // --- GET /api/categories ---
     @GET
+    @Operation(
+        summary = "Listar todas las categorías",
+        description = "Recupera una lista completa con todas las categorías de hábitos registradas en el sistema."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Lista de categorías recuperada con éxito",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))
+        )
+    })
     public Response getAllCategories() {
         List<Category> categories = service.getAllCategories();
         return Response.ok(categories).build();
@@ -38,7 +58,27 @@ public class CategoryController {
     // --- GET /api/categories/{id} ---
     @GET
     @Path("/{id}")
-    public Response getCategoryById(@PathParam("id") int id) {
+    @Operation(
+        summary = "Obtener categoría por ID",
+        description = "Busca y devuelve los detalles de una categoría específica utilizando su identificador único numérico."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Categoría encontrada exitosamente",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "La categoría solicitada no existe en la base de datos",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    public Response getCategoryById(
+        @PathParam("id") 
+        @Parameter(description = "ID numérico de la categoría a consultar", required = true, example = "1") 
+        int id
+    ) {
         try {
             Category category = service.getCategoryById(id);
             return Response.ok(category).build();
@@ -50,7 +90,26 @@ public class CategoryController {
 
     // --- POST /api/categories ---
     @POST
-    public Response createCategory(Category category) {
+    @Operation(
+        summary = "Crear una nueva categoría",
+        description = "Registra una categoría en el sistema. Nota: No es necesario enviar el campo 'id' en el cuerpo, ya que la base de datos lo genera de forma autoincremental."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201", 
+            description = "Categoría creada con éxito",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "Error en la validación de los datos proporcionados o cuerpo de petición vacío",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    public Response createCategory(
+        @Parameter(description = "Objeto JSON con los datos de la nueva categoría", required = true) 
+        Category category
+    ) {
         if (category == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse("El cuerpo de la solicitud no puede estar vacío")).build();
@@ -67,7 +126,34 @@ public class CategoryController {
     // --- PUT /api/categories/{id} ---
     @PUT
     @Path("/{id}")
-    public Response updateCategory(@PathParam("id") int id, Category category) {
+    @Operation(
+        summary = "Actualizar una categoría existente",
+        description = "Modifica los campos de una categoría ya almacenada en base a su ID único."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Categoría actualizada de forma correcta",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "Datos de entrada incorrectos o cuerpo vacío",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "La categoría que se intenta modificar no fue encontrada",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    public Response updateCategory(
+        @PathParam("id") 
+        @Parameter(description = "ID de la categoría a actualizar", required = true, example = "2") 
+        int id, 
+        @Parameter(description = "Objeto JSON con las propiedades modificadas de la categoría", required = true) 
+        Category category
+    ) {
         if (category == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse("El cuerpo de la solicitud no puede estar vacío")).build();
@@ -85,7 +171,26 @@ public class CategoryController {
     // --- DELETE /api/categories/{id} ---
     @DELETE
     @Path("/{id}")
-    public Response deleteCategory(@PathParam("id") int id) {
+    @Operation(
+        summary = "Eliminar una categoría",
+        description = "Remueve permanentemente una categoría de la base de datos a partir de su ID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "204", 
+            description = "Categoría eliminada con éxito (No devuelve contenido de cuerpo)"
+        ),
+        @ApiResponse(
+            responseCode = "404", 
+            description = "La categoría indicada no existe",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+        )
+    })
+    public Response deleteCategory(
+        @PathParam("id") 
+        @Parameter(description = "ID numérico de la categoría a eliminar", required = true, example = "3") 
+        int id
+    ) {
         try {
             service.deleteCategory(id);
             return Response.noContent().build();
@@ -96,7 +201,9 @@ public class CategoryController {
     }
 
     // --- DTO de error ---
+    @Schema(description = "Estructura estándar para las respuestas de error en la API")
     public static class ErrorResponse {
+        @Schema(description = "Mensaje descriptivo del error ocurrido", example = "La categoría especificada no fue encontrada")
         private final String error;
         public ErrorResponse(String error) { this.error = error; }
         public String getError() { return error; }

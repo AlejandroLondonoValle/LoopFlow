@@ -55,7 +55,8 @@ public class Main {
         resourceConfig.packages(
                 "com.loopflow.controller",   // Controladores REST
                 "com.loopflow.filter",       // CorsFilter
-                "com.loopflow.config"        // JacksonConfig
+                "com.loopflow.config",        // JacksonConfig
+                "io.swagger.v3.jaxrs2.integration.resources" // Recursos de Swagger UI
         );
 
         ServletHolder jerseyHolder = new ServletHolder(new ServletContainer(resourceConfig));
@@ -113,7 +114,7 @@ public class Main {
         LOGGER.info("=================================================");
         LOGGER.info("  LoopFlow corriendo en http://localhost:" + port);
         LOGGER.info("  Frontend : http://localhost:" + port + "/");
-        LOGGER.info("  API REST : http://localhost:" + port + "/api/");
+        LOGGER.info("  API REST Docs : http://localhost:" + port + "/swagger.html");
         LOGGER.info("=================================================");
 
         // Hook de apagado limpio

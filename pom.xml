@@ -26,6 +26,7 @@
         <h2.version>2.3.232</h2.version>
         <mysql.version>8.4.0</mysql.version>
         <dotenv.version>3.0.0</dotenv.version>
+        <swagger.version>2.2.21</swagger.version>
     </properties>
 
     <dependencies>
@@ -134,6 +135,15 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- ============================================================ -->
+        <!-- Documentación — Swagger UI                                   -->
+        <!-- ============================================================ -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
 
     </dependencies>
