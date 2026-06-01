@@ -1,0 +1,59 @@
+# ===================================
+# LoopFlow — .gitignore
+# ===================================
+
+# --- Credenciales y secretos ---
+.env
+*.env.local
+*.env.production
+
+# --- Maven Build Output ---
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.jar
+*.war
+*.ear
+
+# --- IDE — IntelliJ IDEA ---
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# --- IDE — Eclipse ---
+.classpath
+.project
+.settings/
+bin/
+
+# --- IDE — VS Code ---
+.vscode/
+*.code-workspace
+
+# --- IDE — NetBeans ---
+nbproject/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# --- OS Files ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V8
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Test Coverage ---
+/target/site/jacoco/
+
+# --- Node (si se añade Tailwind CLI build en el futuro) ---
+node_modules/
+npm-debug.log*
