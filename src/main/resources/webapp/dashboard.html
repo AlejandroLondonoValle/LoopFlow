@@ -48,13 +48,13 @@
           <div class="sidebar-section-label px-6 py-2 text-xs font-semibold text-slate-500 uppercase tracking-widest">Módulos</div>
           <nav class="space-y-1">
             <a href="dashboard.html" class="sidebar-link active flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
-              <span class="link-icon">📊</span> Dashboard
+              Dashboard
             </a>
             <a href="habits.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
-              <span class="link-icon">🎯</span> Hábitos
+              Hábitos
             </a>
             <a href="scrum.html" class="sidebar-link flex items-center gap-3 px-6 py-3 text-sm font-medium hover:bg-slate-900 transition">
-              <span class="link-icon">📋</span> Tablero Scrum
+              Tablero Scrum
             </a>
           </nav>
         </div>
@@ -63,9 +63,9 @@
       <!-- User Profile & Theme Toggle -->
       <div class="p-6 border-t border-slate-900 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm">LF</div>
+          <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm">AL</div>
           <div>
-            <p class="text-sm font-semibold text-white">Usuario</p>
+            <p class="text-sm font-semibold text-white">Alejandro Londoño</p>
             <p class="text-xs text-slate-500">Miembro Premium</p>
           </div>
         </div>
@@ -87,7 +87,6 @@
         
         <!-- Search bar (Ctrl+K style) -->
         <div class="navbar-search flex-1 max-w-[420px] relative">
-          <span class="search-icon absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
           <input type="text" placeholder="Buscar hábitos o tareas..." class="w-full pl-10 pr-12 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-sm focus:outline-none focus:border-primary dark:focus:border-primary transition-all">
           <kbd class="kbd-badge absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-mono border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-1.5 py-0.5 rounded">Ctrl+K</kbd>
         </div>
@@ -109,8 +108,8 @@
             <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Tu perspectiva unificada del día actual.</p>
           </div>
           <div class="flex gap-3">
-            <a href="habits.html" class="btn btn-secondary text-sm">🎯 Crear Hábito</a>
-            <a href="scrum.html" class="btn btn-primary text-sm">📋 Nueva Tarea</a>
+            <a href="habits.html" class="btn btn-secondary text-sm">Crear Hábito</a>
+            <a href="scrum.html" class="btn btn-primary text-sm">Nueva Tarea</a>
           </div>
         </div>
 
@@ -159,7 +158,7 @@
               <div>
                 <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
                   <h2 class="font-serif text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    🎯 Hábitos de Hoy
+                  Hábitos de Hoy
                   </h2>
                   <span class="text-xs px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold">Activos</span>
                 </div>
@@ -186,7 +185,7 @@
               <div>
                 <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 mb-4">
                   <h2 class="font-serif text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    📋 Tareas Pendientes
+                  Tareas Pendientes
                   </h2>
                   <a href="scrum.html" class="text-xs text-primary hover:underline font-semibold">Ir al Tablero →</a>
                 </div>
@@ -212,7 +211,7 @@
 
       <!-- Footer -->
       <footer class="border-t border-slate-100 dark:border-slate-800 py-6 bg-white dark:bg-slate-950 text-center text-xs text-slate-400">
-        <p>© 2026 LoopFlow. Todos los derechos reservados. Desarrollado con HTML5, Tailwind CSS y Vanilla JS.</p>
+        <p>© 2026 · LoopFlow · Todos los derechos reservados · Luis Alejandro Londoño Valle · Mck_Dev</p>
       </footer>
     </div>
   </div>
@@ -255,7 +254,7 @@
         if (summary.habits.length === 0) {
           habitsContainer.innerHTML = `
             <div class="text-center py-8 text-slate-400 dark:text-slate-500">
-              <p class="text-lg">🎯 No hay hábitos creados</p>
+              <p class="text-lg">No hay hábitos creados</p>
               <p class="text-xs mt-1">Crea un hábito activo en la sección de Hábitos para ver tu progreso diario.</p>
             </div>
           `;
@@ -311,7 +310,7 @@
         if (pendingTasks.length === 0) {
           tasksContainer.innerHTML = `
             <div class="text-center py-8 text-slate-400 dark:text-slate-500">
-              <p class="text-lg">📋 Todo al día</p>
+              <p class="text-lg">Todo al día</p>
               <p class="text-xs mt-1">No tienes tareas pendientes por hacer. ¡Buen trabajo!</p>
             </div>
           `;

@@ -57,7 +57,7 @@
       
       <!-- Subtitle Badge -->
       <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-300 mb-6">
-        🚀 Tu nuevo centro de productividad personal
+        Tu nuevo centro de productividad personal
       </span>
       
       <!-- Title -->
@@ -75,8 +75,8 @@
         <a href="dashboard.html" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold shadow-md hover:shadow-lg transition duration-200 text-base">
           Comenzar Gratis
         </a>
-        <a href="#features" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold transition duration-200 text-base">
-          Ver Módulos
+        <a href="docs.html" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold transition duration-200 text-base">
+          Ver Documentación
         </a>
       </div>
 
@@ -89,7 +89,7 @@
           <div class="flex items-center gap-3 select-none text-slate-500">
             <span>$</span>
             <span class="text-emerald-400">git clone</span>
-            <span class="text-slate-300">https://github.com/loopflow/loopflow.git</span>
+            <span class="text-slate-300">https://github.com/AlejandroLondonoValle/LoopFlow.git</span>
           </div>
           <button id="copy-btn" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition duration-150" title="Copiar al portapapeles">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -107,11 +107,10 @@
   <!-- Footer -->
   <footer class="border-t border-slate-100 dark:border-slate-800 py-8 bg-slate-50 dark:bg-slate-950/20">
     <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-      <p>© 2026 LoopFlow. Todos los derechos reservados. Desarrollado con Java 17 y Tailwind CSS.</p>
+        <p>© 2026 · LoopFlow · Todos los derechos reservados · Luis Alejandro Londoño Valle · Mck_Dev</p>
       <div class="flex gap-6">
-        <a href="#" class="hover:text-primary transition">Términos</a>
-        <a href="#" class="hover:text-primary transition">Privacidad</a>
-        <a href="https://github.com/loopflow/loopflow" class="hover:text-primary transition">GitHub</a>
+        <a href="terms.html" class="hover:text-primary transition">Términos y Condiciones</a>
+        <a href="https://github.com/AlejandroLondonoValle/LoopFlow.git" class="hover:text-primary transition">GitHub</a>
       </div>
     </div>
   </footer>
@@ -122,7 +121,7 @@
     // Configuración del botón de copiar
     const copyBtn = document.getElementById('copy-btn');
     copyBtn.addEventListener('click', () => {
-      const command = 'git clone https://github.com/loopflow/loopflow.git';
+      const command = 'git clone https://github.com/AlejandroLondonoValle/LoopFlow.git';
       navigator.clipboard.writeText(command).then(() => {
         // Notificación Toast nativa a través de app.js
         if (window.Toast) {

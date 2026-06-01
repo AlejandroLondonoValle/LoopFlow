@@ -33,7 +33,7 @@ const DarkMode = {
     // Actualizar icono del botón si existe
     const icons = document.querySelectorAll('[data-theme-icon]');
     icons.forEach(icon => {
-      icon.textContent = isDark ? '☀️' : '🌙';
+      icon.textContent = isDark ? '☀' : '⏾';
       icon.setAttribute('title', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
     });
   },
