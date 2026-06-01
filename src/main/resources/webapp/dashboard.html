@@ -235,8 +235,7 @@
         const summary = await window.LoopFlowAPI.dashboard.getSummary();
 
         // 1. Mostrar fecha actual
-        const dateStr = window.Format.date(summary.date);
-        currentDateSpan.textContent = dateStr;
+        currentDateSpan.textContent = window.Format.date(new Date());
 
         // 2. Renderizar Contadores / Stats
         document.getElementById('habits-completed-stat').textContent = summary.habitsCompletedToday;
