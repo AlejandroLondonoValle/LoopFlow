@@ -4,7 +4,7 @@ import com.loopflow.dao.CategoryDAO;
 import com.loopflow.model.Category;
 
 import java.util.List;
-import java.util.Optional;
+// import java.util.Optional;
 
 /**
  * Servicio de lógica de negocio para {@link Category}.
