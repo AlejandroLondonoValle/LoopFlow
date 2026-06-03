@@ -40,21 +40,8 @@ Nota: Para editar o visualizar de manera interactiva las especificaciones técni
 
 ### 1. Diagrama de Flujo de Datos y Componentes del Núcleo
 Espacio reservado para mapear la interacción entre el cliente JavaScript, el enrutador de Jersey y la base de datos distribuida.
-* Enlace: [Editar Diagrama de Componentes en Draw.io](REEMPLAZAR_CON_EL_LINK_INTERACTIVO_DE_DRAW_IO_AQUI)
-* Vista previa del esquema:
-    ```
-    [ REEMPLAZAR: Elimina esta línea e inserta la imagen exportada de Draw.io usando el formato: ![Arquitectura](URL_DE_TU_IMAGEN_AQUI) ]
-    ```
+* Enlace: [Editar Diagrama de Componentes en Draw.io](https://drive.google.com/file/d/1Sn_YJJ9dZey5aP9eNq86r-9UYtIc-Zk-/view?usp=sharing)
 
-### 2. Modelo de Entidad-Relación de la Base de Datos
-Diagrama estructural que describe el esquema relacional de las tablas de Tareas, Categorías, Hábitos e Historiales.
-* Enlace: [Editar Diagrama Entidad-Relación en Draw.io](REEMPLAZAR_CON_EL_LINK_INTERACTIVO_DE_DRAW_IO_AQUI_2)
-* Vista previa del esquema:
-    ```
-    [ REEMPLAZAR: Elimina esta línea e inserta la imagen exportada del esquema DB usando el formato: ![Esquema DB](URL_DE_TU_IMAGEN_DB_AQUI) ]
-    ```
-
----
 
 ## Características Principales
 
